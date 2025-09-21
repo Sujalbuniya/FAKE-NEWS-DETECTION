@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis Result - Fake News Detector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .verdict-card {
+            text-align: center;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .verdict-true {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+        }
+
+        .verdict-false {
+            background: linear-gradient(135deg, #f44336 0%, #da190b 100%);
+            color: white;
+        }
+
+        .verdict-mixed {
+            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            color: white;
+        }
+
+        .verdict-unclear {
+            background: linear-gradient(135deg, #9e9e9e 0%, #616161 100%);
+            color: white;
+        }
+
+        .verdict-title {
+            font-size: 2em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .confidence {
+            font-size: 1.2em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .claim-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        .details-section {
+            margin: 40px 0;
+        }
+
+        .section-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+        }
+
+        .evidence-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .evidence-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .evidence-card h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .source-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .source-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .source-rating {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .source-text {
+            color: #666;
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+
+        .source-link {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        .source-link:hover {
+            text-decoration: underline;
+        }
+
+        .context-flags {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .flag-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            
+            .evidence-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .verdict-title {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Analysis Result</h1>
+            <a href="/" class="back-btn">← Analyze Another Claim</a>
+        </div>
+
+        <div class="content">
+            {% if error %}
+            <div class="verdict-card verdict-unclear">
+                <h2 class="verdict-title">Analysis Error</h2>
+                <p>{{ error }}</p>
+            </div>
+            {% else %}
+            <div class="verdict-card verdict-{{ result.verdict|lower|replace(' ', '-') }}">
+                <h2 class="verdict-title">{{ result.verdict }}</h2>
+                <div class="confidence">Confidence: {{ (result.confidence * 100)|int }}%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ (result.confidence * 100)|int }}%;"></div>
+                </div>
+                <div class="claim-box">
+                    "{{ result.claim_analyzed }}"
+                </div>
+                <p>Based on analysis of {{ result.fact_checks|length }} fact-check sources and Wikipedia verification</p>
+            </div>
+
+            <div class="details-section">
+                <h3 class="section-title">Detailed Analysis</h3>
+                
+                <div class="evidence-grid">
+                    <div class="evidence-card">
+                        <h4>📊 ML Analysis Score</h4>
+                        <p>Machine learning model confidence: <strong>{{ result.ml_score }}/1.0</strong></p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ (result.ml_score * 100)|int }}%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="evidence-card">
+                        <h4>🌐 Wikipedia Verification</h4>
+                        <p>Wikipedia references: <strong>{{ 'Found' if result.wiki_data else 'Not Found' }}</strong></p>
+                        {% if result.wiki_data %}
+                        <p>Article: <strong>{{ result.wiki_data.title }}</strong></p>
+                        {% endif %}
+                    </div>
+
+                    <div class="evidence-card">
+                        <h4>🔍 Fact-Check Sources</h4>
+                        <p>External fact-checks found: <strong>{{ result.fact_checks|length }}</strong></p>
+                    </div>
+                </div>
+
+                {% if result.evidence.context_analysis %}
+                <div class="context-flags">
+                    <h4>⚠️ Context Analysis Flags</h4>
+                    {% for flag in result.evidence.context_analysis %}
+                    <div class="flag-item">• {{ flag }}</div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if result.fact_checks %}
+                <div class="details-section">
+                    <h3 class="section-title">Fact-Check Results</h3>
+                    {% for check in result.fact_checks %}
+                    <div class="source-item">
+                        <div class="source-name">{{ check.source }}</div>
+                        <div class="source-rating">Rating: {{ check.rating }}</div>
+                        <div class="source-text">{{ check.text[:200] }}...</div>
+                        <a href="{{ check.url }}" class="source-link" target="_blank">Read full analysis →</a>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if result.wiki_data %}
+                <div class="details-section">
+                    <h3 class="section-title">Wikipedia Context</h3>
+                    <div class="source-item">
+                        <div class="source-name">{{ result.wiki_data.title }}</div>
+                        <p>{{ result.wiki_data.summary }}</p>
+                        <a href="{{ result.wiki_data.url }}" class="source-link" target="_blank">Read full article on Wikipedia →</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
