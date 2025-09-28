@@ -1,319 +1,288 @@
-# app.py - Enhanced Fake News Detector
-from flask import Flask, request, jsonify, render_template
-import spacy
-import re
-import requests
-import json
-import wikipediaapi
+from flask import Flask, render_template, request, jsonify, session
+import logging
+import os
+from datetime import datetime
+from utils.advanced_fact_checker import advanced_fact_checker
 
-# Initialize Flask App
-app = Flask(__name__)
-
-# Load NLP model
-try:
-    nlp = spacy.load("en_core_web_sm")
-except:
-    # Fallback if model isn't available
-    nlp = None
-
-# Initialize Wikipedia API
-wiki_wiki = wikipediaapi.Wikipedia('FakeNewsDetector/1.0', 'en')
-
-# ==================== CORE MODULES ====================
-
-def extract_claim(full_text):
-    """
-    Extracts the core claim from a sentence that reports what someone said.
-    Example: "X claimed that Y is true" -> returns "Y is true"
-    """
-    if not full_text or not isinstance(full_text, str):
-        return full_text
-        
-    # If spaCy isn't available, use regex fallback
-    if nlp is None:
-        return regex_extract_claim(full_text)
-    
-    try:
-        doc = nlp(full_text)
-        report_phrases = [
-            r'(claimed|said|stated|argued|reported|alleged)( that|,)',
-            r'(according to|as per)(.*)',
-            r'(claimed|said|stated|argued|reported|alleged)'
-        ]
-        
-        for sent in doc.sents:
-            sent_text = sent.text
-            for pattern in report_phrases:
-                if re.search(pattern, sent_text, re.IGNORECASE):
-                    match = re.search(pattern, sent_text, re.IGNORECASE)
-                    start_idx = match.end()
-                    claim = sent_text[start_idx:].strip()
-                    claim = re.sub(r'^[\'",:\-–—\s]+', '', claim)
-                    if claim:
-                        return claim
-    except Exception as e:
-        print(f"Error in extract_claim: {e}")
-    
-    return full_text
-
-def regex_extract_claim(full_text):
-    """Fallback claim extraction using regex only"""
-    patterns = [
-        r'(claimed|said|stated|argued|reported|alleged)\s+that\s+(.+)',
-        r'(according to|as per)\s+[^,]+,?\s*(.+)',
-        r'([^ ]+\s+(?:claimed|said|stated|argued|reported|alleged))\s+(.+)'
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('fake_news_detection.log'),
+        logging.StreamHandler()
     ]
-    
-    for pattern in patterns:
-        match = re.search(pattern, full_text, re.IGNORECASE)
-        if match:
-            return match.group(2).strip()
-    
-    return full_text
+)
 
-def google_fact_check(search_query):
-    """
-    Searches the Google Fact Check Tools API for claims related to the query.
-    Returns a list of fact-check results from various organizations.
-    """
-    api_key = "YOUR_API_KEY_HERE"  # REPLACE WITH YOUR ACTUAL API KEY
-    if api_key == "YOUR_API_KEY_HERE":
-        return []  # Return empty if no API key is set
-    
-    url = "https://factchecktools.googleapis.com/v1alpha1/claims:search"
-    
-    params = {
-        'key': api_key,
-        'query': search_query,
-        'languageCode': 'en',
-        'maxAgeDays': 30  # Limit to recent fact-checks
-    }
-    
-    try:
-        response = requests.get(url, params=params, timeout=10)
-        response.raise_for_status()
-        data = response.json()
-        
-        fact_checks = []
-        if 'claims' in data:
-            for claim in data['claims']:
-                check = {
-                    'text': claim.get('text', ''),
-                    'claimant': claim.get('claimant', ''),
-                    'claimDate': claim.get('claimDate', ''),
-                    'rating': claim.get('claimReview', [{}])[0].get('textualRating', 'No Rating'),
-                    'url': claim.get('claimReview', [{}])[0].get('url', ''),
-                    'source': claim.get('claimReview', [{}])[0].get('publisher', {}).get('name', '')
-                }
-                fact_checks.append(check)
-        
-        return fact_checks[:3]  # Return top 3 results
-        
-    except requests.exceptions.RequestException as e:
-        print(f"Error calling Fact Check API: {e}")
-        return []
+app = Flask(__name__)
+app.secret_key = 'fake-news-detection-secret-key-2024'
 
-def wikipedia_search(query):
-    """
-    Search Wikipedia for information related to the claim
-    """
-    try:
-        # Try to get a direct page first
-        page = wiki_wiki.page(query)
-        if page.exists():
-            return {
-                'title': page.title,
-                'summary': page.summary[:500] + "..." if len(page.summary) > 500 else page.summary,
-                'url': page.fullurl
-            }
-        
-        # If direct page doesn't exist, search
-        search_results = wiki_wiki.search(query)
-        if search_results:
-            # Get the first search result
-            page = wiki_wiki.page(search_results[0])
-            if page.exists():
-                return {
-                    'title': page.title,
-                    'summary': page.summary[:500] + "..." if len(page.summary) > 500 else page.summary,
-                    'url': page.fullurl
-                }
-    except Exception as e:
-        print(f"Error in Wikipedia search: {e}")
-    
-    return None
-
-def analyze_with_ml(claim_text):
-    """
-    Your existing ML model analysis function
-    Replace this with your actual ML model code
-    """
-    # This is a placeholder - replace with your actual model inference
-    # For now, returns a dummy score
-    return 0.65
-
-def generate_final_verdict(ml_score, wiki_data, fact_checks, original_claim):
-    """
-    Combines evidence from all sources to generate a final verdict
-    """
-    evidence = {
-        'ml_score': ml_score,
-        'has_wiki_data': wiki_data is not None,
-        'fact_check_count': len(fact_checks),
-        'fact_check_ratings': [],
-        'context_analysis': analyze_context(original_claim)
-    }
-    
-    # Extract ratings from fact checks
-    for check in fact_checks:
-        rating = check['rating'].lower()
-        evidence['fact_check_ratings'].append(rating)
-    
-    # Decision logic
-    if evidence['fact_check_count'] > 0:
-        return decide_based_on_fact_checks(evidence)
-    elif evidence['has_wiki_data']:
-        return decide_based_on_wiki_ml(evidence)
-    else:
-        return decide_based_on_ml_only(evidence)
-
-def analyze_context(claim):
-    """
-    Analyzes the context of the claim for red flags
-    """
-    red_flags = []
-    
-    # Check for absolute language
-    absolute_terms = ['all', 'every', 'never', 'always', 'nothing', 'no one', 'everything']
-    for term in absolute_terms:
-        if term in claim.lower():
-            red_flags.append(f"Uses absolute term: '{term}'")
-    
-    # Check for emotional language
-    emotional_terms = ['disaster', 'catastrophe', 'bloodbath', 'evil', 'treason']
-    for term in emotional_terms:
-        if term in claim.lower():
-            red_flags.append(f"Uses emotional language: '{term}'")
-    
-    return red_flags
-
-def decide_based_on_fact_checks(evidence):
-    """Decision logic when fact checks are available"""
-    ratings = evidence['fact_check_ratings']
-    
-    true_terms = ['true', 'correct', 'accurate', 'mostly true']
-    false_terms = ['false', 'incorrect', 'inaccurate', 'misleading', 'mostly false']
-    mixed_terms = ['mixed', 'half true', 'partially true']
-    
-    true_count = sum(1 for rating in ratings if any(term in rating for term in true_terms))
-    false_count = sum(1 for rating in ratings if any(term in rating for term in false_terms))
-    mixed_count = sum(1 for rating in ratings if any(term in rating for term in mixed_terms))
-    
-    if true_count > false_count and true_count > mixed_count:
-        return "LIKELY TRUE", 0.8, evidence
-    elif false_count > true_count and false_count > mixed_count:
-        return "LIKELY FALSE", 0.8, evidence
-    elif mixed_count > 0:
-        return "MIXED EVIDENCE", 0.6, evidence
-    else:
-        return "UNCLEAR", 0.5, evidence
-
-def decide_based_on_wiki_ml(evidence):
-    """Decision logic when only Wikipedia and ML are available"""
-    if evidence['ml_score'] > 0.7:
-        return "LIKELY TRUE", evidence['ml_score'], evidence
-    elif evidence['ml_score'] < 0.3:
-        return "LIKELY FALSE", 1 - evidence['ml_score'], evidence
-    else:
-        return "UNCLEAR", 0.5, evidence
-
-def decide_based_on_ml_only(evidence):
-    """Decision logic when only ML is available"""
-    if evidence['ml_score'] > 0.6:
-        return "LIKELY TRUE", evidence['ml_score'], evidence
-    elif evidence['ml_score'] < 0.4:
-        return "LIKELY FALSE", 1 - evidence['ml_score'], evidence
-    else:
-        return "UNCLEAR", 0.5, evidence
-
-# ==================== FLASK ROUTES ====================
+logger = logging.getLogger(__name__)
 
 @app.route('/')
-def home():
+def index():
+    """Main page with fake news detection form"""
+    session['detection_count'] = session.get('detection_count', 0)
     return render_template('index.html')
 
-@app.route('/analyze', methods=['POST'])
-def analyze():
+@app.route('/verify', methods=['POST'])
+def verify_claim():
+    """Verify a single claim for fake news detection"""
     try:
-        if request.method == 'POST':
-            # Get news text from the form
-            news_text = request.form.get('news_text', '')
-            
-            if not news_text.strip():
-                return render_template('result.html', 
-                                    error="Please enter some text to analyze.")
-            
-            # Extract the core claim
-            claim_to_verify = extract_claim(news_text)
-            
-            # Perform multi-source verification
-            ml_score = analyze_with_ml(claim_to_verify)
-            wiki_data = wikipedia_search(claim_to_verify)
-            fact_checks = google_fact_check(claim_to_verify)
-            
-            # Generate final verdict
-            verdict, confidence, evidence = generate_final_verdict(
-                ml_score, wiki_data, fact_checks, claim_to_verify
-            )
-            
-            # Prepare results for display
-            result = {
-                'verdict': verdict,
-                'confidence': round(confidence, 2),
-                'original_text': news_text,
-                'claim_analyzed': claim_to_verify,
-                'wiki_data': wiki_data,
-                'fact_checks': fact_checks,
-                'evidence': evidence,
-                'ml_score': round(ml_score, 2)
-            }
-            
-            return render_template('result.html', result=result)
-            
+        # Get claim from form data or JSON
+        if request.content_type == 'application/json':
+            data = request.get_json()
+            claim = data.get('claim', '').strip()
+        else:
+            claim = request.form.get('claim', '').strip()
+        
+        if not claim:
+            logger.warning("Empty claim received")
+            return jsonify({
+                'status': 'ERROR',
+                'confidence': 0.0,
+                'message': 'No claim provided. Please enter a news claim to analyze.',
+                'timestamp': datetime.now().isoformat()
+            })
+        
+        # Update session counter
+        session['detection_count'] = session.get('detection_count', 0) + 1
+        session['last_claim'] = claim
+        
+        logger.info(f"Analyzing claim for fake news: '{claim}'")
+        
+        # Use the corrected fact checker
+        result = advanced_fact_checker.comprehensive_verify(claim)
+        
+        # Add session info to result
+        result['session'] = {
+            'detection_count': session['detection_count'],
+            'claim_length': len(claim)
+        }
+        
+        # Enhance result with fake news specific terminology
+        result = enhance_with_fake_news_terminology(result)
+        
+        logger.info(f"Fake news detection result: {result.get('status', 'UNKNOWN')} "
+                   f"with confidence {result.get('confidence', 0)}")
+        
+        # Return JSON for API calls, render template for form submissions
+        if request.content_type == 'application/json':
+            return jsonify(result)
+        else:
+            return render_template('result.html', 
+                                 claim=claim,
+                                 result=result,
+                                 timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        
     except Exception as e:
-        print(f"Error in analysis: {e}")
-        return render_template('result.html', 
-                            error="An error occurred during analysis. Please try again.")
+        logger.error(f"Error analyzing claim for fake news: {str(e)}", exc_info=True)
+        error_result = {
+            'status': 'ERROR',
+            'confidence': 0.0,
+            'message': f'AI analysis error: {str(e)}',
+            'timestamp': datetime.now().isoformat(),
+            'recommendation': 'Please try again with a different claim or check the system logs'
+        }
+        
+        if request.content_type == 'application/json':
+            return jsonify(error_result), 500
+        else:
+            return render_template('error.html', 
+                                 error_message=str(e),
+                                 timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
-@app.route('/api/check', methods=['POST'])
-def api_check():
-    """API endpoint for programmatic access"""
+def enhance_with_fake_news_terminology(result):
+    """Enhance results with fake news detection terminology"""
+    confidence = result.get('confidence', 0)
+    
+    # Add fake news risk assessment
+    if confidence >= 0.8:
+        result['fake_news_risk'] = 'LOW'
+        result['risk_level'] = 'Verified Information'
+    elif confidence >= 0.6:
+        result['fake_news_risk'] = 'MEDIUM'
+        result['risk_level'] = 'Needs Verification'
+    else:
+        result['fake_news_risk'] = 'HIGH'
+        result['risk_level'] = 'Potential Misinformation'
+    
+    # Enhance explanation with fake news context
+    if 'explanation' in result:
+        if confidence >= 0.8:
+            result['explanation'] = f"✅ AI Analysis: This claim appears to be credible. {result['explanation']}"
+        elif confidence >= 0.6:
+            result['explanation'] = f"⚠️ AI Analysis: Exercise caution. {result['explanation']}"
+        else:
+            result['explanation'] = f"🚨 AI Analysis: Potential fake news detected. {result['explanation']}"
+    
+    return result
+
+@app.route('/api/verify', methods=['GET', 'POST'])
+def api_verify():
+    """API endpoint for fake news detection"""
     try:
-        data = request.get_json()
-        news_text = data.get('text', '')
+        if request.method == 'GET':
+            claim = request.args.get('claim', '')
+        else:
+            if request.content_type == 'application/json':
+                data = request.get_json()
+                claim = data.get('claim', '')
+            else:
+                claim = request.form.get('claim', '')
         
-        claim_to_verify = extract_claim(news_text)
-        ml_score = analyze_with_ml(claim_to_verify)
-        wiki_data = wikipedia_search(claim_to_verify)
-        fact_checks = google_fact_check(claim_to_verify)
+        claim = claim.strip()
         
-        verdict, confidence, evidence = generate_final_verdict(
-            ml_score, wiki_data, fact_checks, claim_to_verify
-        )
+        if not claim:
+            return jsonify({
+                'error': 'Claim parameter required',
+                'usage': 'Send a GET request to /api/verify?claim=YOUR_CLAIM or POST with JSON',
+                'example': '/api/verify?claim=Breaking: Amazing discovery announced',
+                'system': 'Fake News Detection AI'
+            }), 400
         
-        return jsonify({
-            'verdict': verdict,
-            'confidence': confidence,
-            'claim_analyzed': claim_to_verify,
-            'sources_checked': {
-                'wikipedia': wiki_data is not None,
-                'fact_checks': len(fact_checks)
-            },
-            'evidence': evidence
-        })
+        logger.info(f"API fake news detection request for: '{claim}'")
+        
+        result = advanced_fact_checker.comprehensive_verify(claim)
+        result = enhance_with_fake_news_terminology(result)
+        
+        # Add API-specific metadata
+        result['api'] = {
+            'version': '2.0',
+            'endpoint': '/api/verify',
+            'response_format': 'json',
+            'system': 'Fake News Detection AI'
+        }
+        
+        return jsonify(result)
         
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        logger.error(f"API error in fake news detection: {str(e)}")
+        return jsonify({
+            'error': 'AI analysis failed',
+            'message': str(e),
+            'timestamp': datetime.now().isoformat(),
+            'system': 'Fake News Detection AI'
+        }), 500
+
+@app.route('/api/batch-verify', methods=['POST'])
+def api_batch_verify():
+    """API endpoint for batch fake news detection"""
+    try:
+        if request.content_type != 'application/json':
+            return jsonify({'error': 'Content-Type must be application/json'}), 400
+        
+        data = request.get_json()
+        claims = data.get('claims', [])
+        
+        if not claims or not isinstance(claims, list):
+            return jsonify({
+                'error': 'Claims must be provided as a list',
+                'example': {'claims': ['Claim 1', 'Claim 2', 'Claim 3']},
+                'system': 'Fake News Detection AI'
+            }), 400
+        
+        if len(claims) > 50:  # Limit batch size
+            return jsonify({'error': 'Batch size limited to 50 claims maximum'}), 400
+        
+        logger.info(f"Batch fake news detection request for {len(claims)} claims")
+        
+        result = advanced_fact_checker.batch_verify(claims)
+        
+        # Enhance each result with fake news terminology
+        for key, res in result.items():
+            if key != 'batch_summary':
+                result[key] = enhance_with_fake_news_terminology(res)
+        
+        return jsonify(result)
+        
+    except Exception as e:
+        logger.error(f"Batch API error in fake news detection: {str(e)}")
+        return jsonify({
+            'error': 'Batch fake news detection failed',
+            'message': str(e),
+            'system': 'Fake News Detection AI'
+        }), 500
+
+@app.route('/health')
+def health_check():
+    """Health check endpoint"""
+    return jsonify({
+        'status': 'healthy',
+        'timestamp': datetime.now().isoformat(),
+        'version': '2.0_corrected',
+        'system': 'Fake News Detection AI',
+        'issue_fixed': '50_percent_confidence_bug',
+        'features': ['AI-Powered Detection', 'Confidence Scoring', 'Real-time Analysis']
+    })
+
+@app.route('/stats')
+def stats():
+    """Statistics endpoint"""
+    stats_data = {
+        'detection_count': session.get('detection_count', 0),
+        'last_claim_analyzed': session.get('last_claim', 'None'),
+        'system_version': '2.0_corrected',
+        'system_name': 'Fake News Detection AI',
+        'fixes_applied': [
+            'Basic facts now return 100% confidence',
+            'Added proper claim classification',
+            'Improved fake news detection algorithms',
+            'Fixed confidence calculation bugs'
+        ],
+        'ai_capabilities': [
+            'Pattern recognition',
+            'Credibility assessment',
+            'Risk evaluation',
+            'Source verification'
+        ],
+        'timestamp': datetime.now().isoformat()
+    }
+    
+    return jsonify(stats_data)
+
+@app.errorhandler(404)
+def not_found(error):
+    return jsonify({
+        'error': 'Endpoint not found',
+        'system': 'Fake News Detection AI',
+        'available_endpoints': ['/', '/verify', '/api/verify', '/health', '/stats']
+    }), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return jsonify({
+        'error': 'AI system error',
+        'message': 'Fake news detection system encountered an error',
+        'system': 'Fake News Detection AI'
+    }), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Check if we're in development mode
+    debug_mode = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
+    
+    print("=" * 60)
+    print("FAKE NEWS DETECTION AI - CORRECTED VERSION 2.0")
+    print("=" * 60)
+    print("ISSUES FIXED:")
+    print("✓ Basic facts now return 100% confidence (not 50%)")
+    print("✓ Added proper claim classification system")
+    print("✓ Improved fake news detection algorithms")
+    print("✓ Fixed confidence calculation bugs")
+    print("=" * 60)
+    print("Starting Fake News Detection AI on http://localhost:5000")
+    print("Available endpoints:")
+    print("  GET  /                    - Web interface")
+    print("  POST /verify              - Detect fake news")
+    print("  GET  /api/verify?claim=X  - API detection")
+    print("  POST /api/batch-verify    - Batch detection")
+    print("  GET  /health              - Health check")
+    print("  GET  /stats               - Statistics")
+    print("=" * 60)
+    
+    app.run(
+        host='0.0.0.0',
+        port=5000,
+        debug=debug_mode,
+        threaded=True
+    )

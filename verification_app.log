@@ -1,0 +1,56 @@
+2025-09-23 11:01:23,814 - werkzeug - WARNING -  * Debugger is active!
+2025-09-23 11:01:23,817 - werkzeug - INFO -  * Debugger PIN: 119-980-498
+2025-09-23 11:05:59,211 - werkzeug - INFO -  * Detected change in 'C:\\Users\\sujal\\OneDrive\\Desktop\\FAKE-NEWS-DETECTION\\utils\\fact_checker.py', reloading
+2025-09-23 11:05:59,611 - werkzeug - WARNING -  * Debugger is active!
+2025-09-23 11:05:59,614 - werkzeug - INFO -  * Debugger PIN: 119-980-498
+2025-09-23 11:06:19,813 - werkzeug - INFO -  * Detected change in 'C:\\Users\\sujal\\OneDrive\\Desktop\\FAKE-NEWS-DETECTION\\utils\\advanced_fact_checker.py', reloading
+2025-09-23 11:06:20,186 - werkzeug - WARNING -  * Debugger is active!
+2025-09-23 11:06:20,190 - werkzeug - INFO -  * Debugger PIN: 119-980-498
+2025-09-23 11:08:08,246 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.22.13.90:5000
+2025-09-23 11:08:08,246 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-09-23 11:08:08,248 - werkzeug - INFO -  * Restarting with stat
+2025-09-23 11:08:08,536 - werkzeug - WARNING -  * Debugger is active!
+2025-09-23 11:08:08,538 - werkzeug - INFO -  * Debugger PIN: 833-334-434
+2025-09-23 11:32:34,025 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.22.13.90:5000
+2025-09-23 11:32:34,026 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-09-23 11:32:34,029 - werkzeug - INFO -  * Restarting with stat
+2025-09-23 11:32:34,357 - werkzeug - WARNING -  * Debugger is active!
+2025-09-23 11:32:34,359 - werkzeug - INFO -  * Debugger PIN: 833-334-434
+2025-09-23 11:36:54,903 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.22.13.90:5000
+2025-09-23 11:36:54,904 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-09-23 11:36:54,906 - werkzeug - INFO -  * Restarting with stat
+2025-09-23 11:36:55,348 - werkzeug - WARNING -  * Debugger is active!
+2025-09-23 11:36:55,351 - werkzeug - INFO -  * Debugger PIN: 833-334-434
+2025-09-23 11:37:00,543 - werkzeug - INFO - 127.0.0.1 - - [23/Sep/2025 11:37:00] "GET / HTTP/1.1" 200 -
+2025-09-23 11:37:00,781 - werkzeug - INFO - 127.0.0.1 - - [23/Sep/2025 11:37:00] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-09-23 11:37:15,177 - __main__ - INFO - Verifying claim: 'Brendan Carr blames ratings for ABC suspending Kimmel, even as more Republicans speak out against him'
+2025-09-23 11:37:15,180 - utils.advanced_fact_checker - INFO - Verified claim: 'Brendan Carr blames ratings for ABC suspending Kimmel, even as more Republicans speak out against him' -> Status: COMPONENT_ANALYSIS
+2025-09-23 11:37:15,180 - __main__ - INFO - Claim verification result: COMPONENT_ANALYSIS with confidence 0.8
+2025-09-23 11:37:15,284 - werkzeug - INFO - 127.0.0.1 - - [23/Sep/2025 11:37:15] "POST /verify HTTP/1.1" 200 -
+2025-09-23 11:39:05,267 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.22.13.90:5000
+2025-09-23 11:39:05,268 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-09-23 11:39:05,270 - werkzeug - INFO -  * Restarting with stat
+2025-09-23 11:39:05,699 - werkzeug - WARNING -  * Debugger is active!
+2025-09-23 11:39:05,703 - werkzeug - INFO -  * Debugger PIN: 833-334-434
+2025-09-23 11:39:10,806 - werkzeug - INFO - 127.0.0.1 - - [23/Sep/2025 11:39:10] "GET / HTTP/1.1" 200 -
+2025-09-23 11:41:07,105 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.22.13.90:5000
+2025-09-23 11:41:07,106 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-09-23 11:41:07,108 - werkzeug - INFO -  * Restarting with stat
+2025-09-23 11:41:07,623 - werkzeug - WARNING -  * Debugger is active!
+2025-09-23 11:41:07,628 - werkzeug - INFO -  * Debugger PIN: 119-980-498
+2025-09-23 11:41:14,732 - werkzeug - INFO - 127.0.0.1 - - [23/Sep/2025 11:41:14] "GET / HTTP/1.1" 200 -

@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fake News Detector</title>
+    <title>Fake News Detection with AI - Corrected v2.0</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
@@ -18,244 +18,262 @@
             min-height: 100vh;
             padding: 20px;
         }
-
+        
         .container {
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .fix-notice {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .verification-card {
             background: white;
             border-radius: 15px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
             padding: 40px;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            font-weight: 300;
-        }
-
-        .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            padding: 30px;
-            background: #f8f9fa;
-        }
-
-        .feature {
-            text-align: center;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        }
-
-        .feature h3 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .main-content {
-            padding: 40px;
-        }
-
-        .input-area {
             margin-bottom: 30px;
         }
-
-        .input-area h2 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-            text-align: center;
+        
+        .form-group {
+            margin-bottom: 25px;
         }
-
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
         textarea {
             width: 100%;
-            height: 200px;
-            padding: 20px;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
             font-size: 16px;
+            font-family: inherit;
             resize: vertical;
+            min-height: 120px;
             transition: border-color 0.3s ease;
         }
-
+        
         textarea:focus {
             outline: none;
-            border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            border-color: #667eea;
         }
-
-        .analyze-btn {
-            display: block;
-            width: 200px;
-            margin: 20px auto;
-            padding: 15px;
-            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: 600;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            font-weight: 600;
         }
-
-        .analyze-btn:hover {
+        
+        .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
-
-        .analyze-btn:active {
+        
+        .btn:active {
             transform: translateY(0);
         }
-
-        .how-it-works {
+        
+        .examples {
+            margin-top: 30px;
+        }
+        
+        .examples h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .example-list {
+            list-style: none;
+        }
+        
+        .example-list li {
+            padding: 10px;
+            margin: 5px 0;
             background: #f8f9fa;
-            padding: 40px;
-            border-radius: 10px;
-            margin-top: 40px;
+            border-left: 3px solid #667eea;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.3s ease;
         }
-
-        .how-it-works h2 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
+        
+        .example-list li:hover {
+            background: #e9ecef;
         }
-
-        .steps {
+        
+        .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
+            margin-top: 30px;
         }
-
-        .step {
-            background: white;
+        
+        .feature {
+            background: rgba(255,255,255,0.1);
             padding: 20px;
             border-radius: 10px;
+            color: white;
             text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
-
-        .step-number {
+        
+        .feature h4 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: white;
+            opacity: 0.8;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
             width: 40px;
             height: 40px;
-            background: #3498db;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px;
-            font-weight: bold;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
         }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #6c757d;
-            background: #f8f9fa;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .header {
-                padding: 30px 20px;
-            }
-            
-            .main-content {
-                padding: 30px 20px;
-            }
-            
-            .features {
-                grid-template-columns: 1fr;
-                padding: 20px;
-            }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>FAKE NEWS DETECTOR</h1>
-            <p>AI-Powered Fact Checking with Multi-Source Verification</p>
+            <h1>🤖 Fake News Detection with AI</h1>
+            <div class="subtitle">Corrected System Version 2.0</div>
+            <div class="fix-notice">
+                <strong>🚀 MAJOR FIX APPLIED:</strong> Basic facts now correctly show 100% confidence (was 50% due to system bug)
+            </div>
         </div>
-
+        
+        <div class="verification-card">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #333;">Detect Fake News</h2>
+            
+            <form id="verificationForm" action="/verify" method="POST">
+                <div class="form-group">
+                    <label for="claim">Enter news claim or statement to verify:</label>
+                    <textarea 
+                        id="claim" 
+                        name="claim" 
+                        placeholder="Example: 'Delhi is in India' or 'Breaking: Celebrity makes shocking announcement'"
+                        required></textarea>
+                </div>
+                
+                <button type="submit" class="btn" style="width: 100%;">
+                    🔍 Analyze for Fake News
+                </button>
+            </form>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>AI is analyzing the claim... Detecting potential fake news patterns.</p>
+            </div>
+            
+            <div class="examples">
+                <h3>Try these examples:</h3>
+                <ul class="example-list">
+                    <li onclick="document.getElementById('claim').value = 'Delhi is in India'">Delhi is in India</li>
+                    <li onclick="document.getElementById('claim').value = 'Paris is the capital of France'">Paris is the capital of France</li>
+                    <li onclick="document.getElementById('claim').value = 'Water boils at 100 degrees Celsius'">Water boils at 100 degrees Celsius</li>
+                    <li onclick="document.getElementById('claim').value = 'Brendan Carr blames ratings for ABC suspending Kimmel'">Brendan Carr blames ratings for ABC suspending Kimmel</li>
+                    <li onclick="document.getElementById('claim').value = 'Breaking: Scientists discover aliens on Mars'">Breaking: Scientists discover aliens on Mars</li>
+                </ul>
+            </div>
+        </div>
+        
         <div class="features">
             <div class="feature">
-                <h3>🤖 ML Analysis</h3>
-                <p>Advanced machine learning models analyze text patterns</p>
+                <h4>🔍 AI-Powered Detection</h4>
+                <p>Advanced machine learning algorithms detect fake news patterns</p>
             </div>
             <div class="feature">
-                <h3>🌐 Wikipedia Integration</h3>
-                <p>Cross-reference information with Wikipedia knowledge base</p>
+                <h4>✅ Confidence Scoring</h4>
+                <p>Accurate confidence levels with bug fixes applied</p>
             </div>
             <div class="feature">
-                <h3>⚡ Real-time Verification</h3>
-                <p>Instant fact-checking against multiple reliable sources</p>
+                <h4>📊 Detailed Analysis</h4>
+                <p>Comprehensive breakdown of news credibility factors</p>
             </div>
             <div class="feature">
-                <h3>🔍 Multi-source Checking</h3>
-                <p>Comprehensive analysis across various information sources</p>
+                <h4>⚡ Real-time Verification</h4>
+                <p>Instant analysis of claims and statements</p>
             </div>
         </div>
-
-        <div class="main-content">
-            <div class="input-area">
-                <h2>Paste news text or article content below to check its credibility</h2>
-                <form action="/analyze" method="POST">
-                    <textarea name="news_text" placeholder="Example: According to recent reports, the new policy will cause prices to rise dramatically..." required></textarea>
-                    <button type="submit" class="analyze-btn">Analyze News</button>
-                </form>
-            </div>
-
-            <div class="how-it-works">
-                <h2>How It Works</h2>
-                <div class="steps">
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <h3>Paste Text</h3>
-                        <p>Copy and paste the news content or article you want to verify</p>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <h3>AI Analysis</h3>
-                        <p>Our system extracts the core claim and analyzes it using ML</p>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <h3>Multi-Source Check</h3>
-                        <p>We verify against Wikipedia and fact-checking databases</p>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">4</div>
-                        <h3>Get Results</h3>
-                        <p>Receive a detailed credibility report with confidence score</p>
-                    </div>
-                </div>
-            </div>
+        
+        <div class="footer">
+            <p>Fake News Detection System v2.0 (AI-Powered) | 
+               <a href="/health" style="color: white;">Health Check</a> | 
+               <a href="/stats" style="color: white;">Statistics</a>
+            </p>
         </div>
-
-        <footer>
-            <p>© 2024 Fake News Detector | AI-Powered Fact Checking System</p>
-        </footer>
     </div>
+
+    <script>
+        document.getElementById('verificationForm').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const loading = document.getElementById('loading');
+            
+            // Show loading indicator
+            submitBtn.style.display = 'none';
+            loading.style.display = 'block';
+            
+            // Form will submit normally, this just shows feedback
+        });
+        
+        // Example click handlers
+        document.querySelectorAll('.example-list li').forEach(item => {
+            item.addEventListener('click', function() {
+                document.getElementById('claim').value = this.textContent;
+                document.getElementById('claim').focus();
+            });
+        });
+    </script>
 </body>
 </html>
