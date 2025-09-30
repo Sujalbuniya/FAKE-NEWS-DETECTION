@@ -101,3 +101,61 @@
 2025-09-24 12:14:22,914 - __main__ - INFO - Fake news detection result: REQUIRES_RESEARCH with confidence 0.5
 2025-09-24 12:14:22,993 - werkzeug - INFO - 127.0.0.1 - - [24/Sep/2025 12:14:22] "POST /verify HTTP/1.1" 200 -
 2025-09-24 12:15:02,469 - werkzeug - INFO - 127.0.0.1 - - [24/Sep/2025 12:15:02] "GET /stats HTTP/1.1" 200 -
+2025-09-30 12:18:20,156 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.69.56.90:5000
+2025-09-30 12:18:20,157 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-09-30 12:18:20,159 - werkzeug - INFO -  * Restarting with stat
+2025-09-30 12:18:20,486 - werkzeug - WARNING -  * Debugger is active!
+2025-09-30 12:18:20,490 - werkzeug - INFO -  * Debugger PIN: 833-334-434
+2025-09-30 12:37:16,893 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:37:16] "GET / HTTP/1.1" 200 -
+2025-09-30 12:37:17,448 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:37:17] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-09-30 12:38:20,298 - __main__ - INFO - Analyzing claim for fake news: 'Week after politically charged Asia Cup final, no clarity whether India, Pakistan players will shake hands during Women’s World Cup fixture'
+2025-09-30 12:38:20,301 - utils.advanced_fact_checker - INFO - Verified claim: 'Week after politically charged Asia Cup final, no clarity whether India, Pakistan players will shake hands during Women’s World Cup fixture' -> Status: REQUIRES_RESEARCH
+2025-09-30 12:38:20,301 - __main__ - INFO - Fake news detection result: REQUIRES_RESEARCH with confidence 0.5
+2025-09-30 12:38:20,358 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:38:20] "POST /verify HTTP/1.1" 200 -
+2025-09-30 12:38:38,385 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:38:38] "GET / HTTP/1.1" 200 -
+2025-09-30 12:38:40,841 - __main__ - INFO - Analyzing claim for fake news: 'Exclusive: Standardised gear, shared logistics, joint training to boost Army, Navy, Air Force integration before theatre command'
+2025-09-30 12:38:40,842 - utils.advanced_fact_checker - INFO - Verified claim: 'Exclusive: Standardised gear, shared logistics, joint training to boost Army, Navy, Air Force integration before theatre command' -> Status: REQUIRES_RESEARCH
+2025-09-30 12:38:40,842 - __main__ - INFO - Fake news detection result: REQUIRES_RESEARCH with confidence 0.5
+2025-09-30 12:38:40,843 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:38:40] "POST /verify HTTP/1.1" 200 -
+2025-09-30 12:39:07,960 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:39:07] "GET / HTTP/1.1" 200 -
+2025-09-30 12:39:10,343 - __main__ - INFO - Analyzing claim for fake news: 'UPSC Key: MiG-21, India-EU strategic agenda, and Special and Differential Treatment of WTO'
+2025-09-30 12:39:10,343 - utils.advanced_fact_checker - INFO - Verified claim: 'UPSC Key: MiG-21, India-EU strategic agenda, and Special and Differential Treatment of WTO' -> Status: REQUIRES_RESEARCH
+2025-09-30 12:39:10,344 - __main__ - INFO - Fake news detection result: REQUIRES_RESEARCH with confidence 0.5
+2025-09-30 12:39:10,345 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:39:10] "POST /verify HTTP/1.1" 200 -
+2025-09-30 12:40:23,845 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:40:23] "GET / HTTP/1.1" 200 -
+2025-09-30 12:40:26,532 - __main__ - INFO - Analyzing claim for fake news: 'Week after politically charged Asia Cup final, no clarity whether India, Pakistan players will shake hands during Women’s World Cup fixture'
+2025-09-30 12:40:26,533 - utils.advanced_fact_checker - INFO - Verified claim: 'Week after politically charged Asia Cup final, no clarity whether India, Pakistan players will shake hands during Women’s World Cup fixture' -> Status: REQUIRES_RESEARCH
+2025-09-30 12:40:26,533 - __main__ - INFO - Fake news detection result: REQUIRES_RESEARCH with confidence 0.5
+2025-09-30 12:40:26,535 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:40:26] "POST /verify HTTP/1.1" 200 -
+2025-09-30 12:41:19,220 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:41:19] "GET / HTTP/1.1" 200 -
+2025-09-30 12:41:21,464 - __main__ - INFO - Analyzing claim for fake news: '‘Total internet blackout’ in Afghanistan sparks panic after Taliban vowed to stamp out immoral activities'
+2025-09-30 12:41:21,464 - utils.advanced_fact_checker - INFO - Verified claim: '‘Total internet blackout’ in Afghanistan sparks panic after Taliban vowed to stamp out immoral activities' -> Status: REQUIRES_RESEARCH
+2025-09-30 12:41:21,464 - __main__ - INFO - Fake news detection result: REQUIRES_RESEARCH with confidence 0.5
+2025-09-30 12:41:21,465 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:41:21] "POST /verify HTTP/1.1" 200 -
+2025-09-30 12:42:31,784 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:42:31] "GET / HTTP/1.1" 200 -
+2025-09-30 12:42:35,385 - __main__ - INFO - Analyzing claim for fake news: 'The India-US trade deal, which was almost agreed upon by the two sides, fell apart at the last minute, and the conversation at the political level seeks to give a push to the negotiations.'
+2025-09-30 12:42:35,385 - utils.advanced_fact_checker - INFO - Verified claim: 'The India-US trade deal, which was almost agreed upon by the two sides, fell apart at the last minute, and the conversation at the political level seeks to give a push to the negotiations.' -> Status: REQUIRES_RESEARCH
+2025-09-30 12:42:35,386 - __main__ - INFO - Fake news detection result: REQUIRES_RESEARCH with confidence 0.5
+2025-09-30 12:42:35,387 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:42:35] "POST /verify HTTP/1.1" 200 -
+2025-09-30 12:42:58,405 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:42:58] "GET / HTTP/1.1" 200 -
+2025-09-30 12:43:00,877 - __main__ - INFO - Analyzing claim for fake news: 'Total internet blackout’ in Afghanistan sparks panic after Taliban vowed to stamp out immoral activities'
+2025-09-30 12:43:00,878 - utils.advanced_fact_checker - INFO - Verified claim: 'Total internet blackout’ in Afghanistan sparks panic after Taliban vowed to stamp out immoral activities' -> Status: REQUIRES_RESEARCH
+2025-09-30 12:43:00,878 - __main__ - INFO - Fake news detection result: REQUIRES_RESEARCH with confidence 0.5
+2025-09-30 12:43:00,879 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:43:00] "POST /verify HTTP/1.1" 200 -
+2025-09-30 12:45:07,933 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:45:07] "GET / HTTP/1.1" 200 -
+2025-09-30 12:45:11,007 - __main__ - INFO - Analyzing claim for fake news: 'According to established scientific knowledge, water boils at precisely 100 degrees Celsius under standard conditions. Meanwhile, in global geography, Delhi remains firmly situated within India's borders as the nation's capital, while Paris continues to serve as France's capital city. These facts, verified by international scientific and governmental bodies, represent fundamental truths unaffected by current events.'
+2025-09-30 12:45:11,008 - utils.advanced_fact_checker - INFO - Verified claim: 'According to established scientific knowledge, water boils at precisely 100 degrees Celsius under standard conditions. Meanwhile, in global geography, Delhi remains firmly situated within India's borders as the nation's capital, while Paris continues to serve as France's capital city. These facts, verified by international scientific and governmental bodies, represent fundamental truths unaffected by current events.' -> Status: LIKELY_TRUE
+2025-09-30 12:45:11,008 - __main__ - INFO - Fake news detection result: LIKELY_TRUE with confidence 0.95
+2025-09-30 12:45:11,009 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:45:11] "POST /verify HTTP/1.1" 200 -
+2025-09-30 12:46:13,247 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:46:13] "GET / HTTP/1.1" 200 -
+2025-09-30 12:46:44,039 - __main__ - INFO - Analyzing claim for fake news: 'scientists claims that water boils at 120 degree celcius'
+2025-09-30 12:46:44,039 - utils.advanced_fact_checker - INFO - Verified claim: 'scientists claims that water boils at 120 degree celcius' -> Status: LIKELY_TRUE
+2025-09-30 12:46:44,040 - __main__ - INFO - Fake news detection result: LIKELY_TRUE with confidence 0.95
+2025-09-30 12:46:44,041 - werkzeug - INFO - 127.0.0.1 - - [30/Sep/2025 12:46:44] "POST /verify HTTP/1.1" 200 -
+2025-09-30 12:53:08,344 - werkzeug - INFO -  * Detected change in 'C:\\Users\\sujal\\OneDrive\\Desktop\\FAKE-NEWS-DETECTION\\utils\\fact_checker.py', reloading
+2025-09-30 12:53:08,407 - werkzeug - INFO -  * Restarting with stat
+2025-09-30 12:53:08,797 - werkzeug - WARNING -  * Debugger is active!
+2025-09-30 12:53:08,799 - werkzeug - INFO -  * Debugger PIN: 833-334-434

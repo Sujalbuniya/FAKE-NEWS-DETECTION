@@ -6,7 +6,10 @@ from typing import Dict, Tuple, List
 class FactChecker:
     def __init__(self):
         self.basic_facts = self._load_basic_facts()
-        self.news_sources = ["reuters", "associated press", "bbc", "cnn", "fox news", "al jazeera"]
+        self.credible_sources = ["reuters", "associated press", "bbc", "cnn", "al jazeera", "ap news", "wall street journal", "new york times"]
+        self.questionable_sources = ["unknown source", "anonymous", "rumors", "some say", "they say", "people say", "according to rumors"]
+        self.sensational_words = ["shocking", "breaking", "panic", "crisis", "disaster", "massive", "explosive", "secret", "leaked"]
+        self.neutral_words = ["reports", "states", "according to", "confirmed", "official", "announced", "stated"]
         
     def _load_basic_facts(self) -> Dict:
         """Load basic facts that should always return 100% confidence"""
@@ -24,7 +27,7 @@ class FactChecker:
                 "explanation": "Geographic fact confirmed by French government and international sources",
                 "category": "geography",
                 "sources": ["French Government", "UN Records", "World Factbook"]
-               },
+            },
             "water boils at 100 degrees celsius": {
                 "truth_value": True,
                 "confidence": 1.0, 
@@ -69,6 +72,73 @@ class FactChecker:
             }
         }
     
+    def _check_news_source_credibility(self, claim: str) -> Dict:
+        """Check if claim mentions credible or questionable sources"""
+        claim_lower = claim.lower()
+        
+        # Check for credible sources
+        for source in self.credible_sources:
+            if source in claim_lower:
+                return {"confidence": 0.85, "reason": f"Mentions credible source: {source}", "impact": "positive"}
+        
+        # Check for questionable sources
+        for source in self.questionable_sources:
+            if source in claim_lower:
+                return {"confidence": 0.3, "reason": f"Uses questionable source: {source}", "impact": "negative"}
+        
+        return {"confidence": 0.5, "reason": "No source credibility information", "impact": "neutral"}
+    
+    def _analyze_claim_sentiment(self, claim: str) -> Dict:
+        """Basic sentiment analysis for news claims"""
+        claim_lower = claim.lower()
+        
+        sensational_count = sum(1 for word in self.sensational_words if word in claim_lower)
+        neutral_count = sum(1 for word in self.neutral_words if word in claim_lower)
+        
+        if sensational_count > 2:
+            return {"confidence": 0.4, "reason": "High sensational language - may indicate clickbait", "impact": "negative"}
+        elif neutral_count > 1:
+            return {"confidence": 0.7, "reason": "Neutral reporting language - indicates professional journalism", "impact": "positive"}
+        elif sensational_count == 0 and neutral_count == 0:
+            return {"confidence": 0.6, "reason": "Standard news language", "impact": "neutral"}
+        else:
+            return {"confidence": 0.5, "reason": "Mixed language patterns", "impact": "neutral"}
+    
+    def _validate_scientific_claims(self, claim: str) -> Dict:
+        """Validate scientific claims for accuracy"""
+        claim_lower = claim.lower()
+        
+        # Water boiling point validation
+        if 'water boils at' in claim_lower:
+            temp_match = re.search(r'water boils at (\d+)', claim_lower)
+            if temp_match:
+                temp = int(temp_match.group(1))
+                if temp != 100:
+                    return {
+                        "confidence": 0.1,
+                        "reason": f"SCIENTIFIC ERROR: Water boils at 100°C, not {temp}°C",
+                        "impact": "negative",
+                        "correction": "Correct fact: Water boils at 100°C at sea level"
+                    }
+                else:
+                    return {
+                        "confidence": 0.95,
+                        "reason": "Scientifically accurate boiling point",
+                        "impact": "positive"
+                    }
+        
+        # Earth shape validation
+        earth_flat_indicators = ['earth is flat', 'flat earth', 'earth flat']
+        if any(indicator in claim_lower for indicator in earth_flat_indicators):
+            return {
+                "confidence": 0.1,
+                "reason": "SCIENTIFIC MISINFORMATION: Earth is round, not flat",
+                "impact": "negative",
+                "correction": "Correct fact: Earth is an oblate spheroid (round)"
+            }
+        
+        return {"confidence": 0.5, "reason": "No scientific claims detected", "impact": "neutral"}
+    
     def _classify_claim_type(self, claim: str) -> str:
         """Classify the type of claim for appropriate verification"""
         claim_lower = claim.lower().strip()
@@ -76,6 +146,11 @@ class FactChecker:
         # Exact match for known basic facts
         if claim_lower in self.basic_facts:
             return "basic_fact"
+            
+        # Scientific validation check
+        science_check = self._validate_scientific_claims(claim)
+        if science_check["impact"] == "negative":
+            return "scientific_misinformation"
             
         # Patterns for basic geographic facts
         geographic_patterns = [
@@ -172,21 +247,58 @@ class FactChecker:
             "category": "unknown"
         }
     
+    def _verify_scientific_misinformation(self, claim: str) -> Dict:
+        """Handle scientifically inaccurate claims"""
+        science_check = self._validate_scientific_claims(claim)
+        
+        return {
+            "status": "DEBUNKED",
+            "confidence": science_check["confidence"],
+            "truth_value": False,
+            "explanation": science_check["reason"],
+            "category": "scientific_fact",
+            "sources": ["Scientific consensus", "Physics standards", "Academic research"],
+            "verification_note": "SCIENTIFIC MISINFORMATION DETECTED",
+            "correction": science_check.get("correction", "")
+        }
+    
     def _verify_news_claim(self, claim: str) -> Dict:
-        """Verify news claims by breaking them down into components"""
+        """Verify news claims with enhanced analysis"""
         components = self._break_down_news_claim(claim)
         claim_lower = claim.lower()
         
+        # Get additional analyses
+        source_analysis = self._check_news_source_credibility(claim)
+        sentiment_analysis = self._analyze_claim_sentiment(claim)
+        
+        # Calculate combined confidence
+        base_confidence = 0.7
+        final_confidence = (base_confidence + source_analysis["confidence"] + sentiment_analysis["confidence"]) / 3
+        
+        # Adjust status based on confidence
+        if final_confidence >= 0.7:
+            status = "LIKELY_TRUE"
+        elif final_confidence >= 0.5:
+            status = "UNCERTAIN"
+        else:
+            status = "LIKELY_FALSE"
+        
         # Check for specific known patterns
         if "brendan carr" in claim_lower and "abc" in claim_lower and "kimmel" in claim_lower:
-            return self._analyze_brendan_carr_claim(claim, components)
+            detailed_analysis = self._analyze_brendan_carr_claim(claim, components)
+            detailed_analysis["confidence"] = final_confidence
+            detailed_analysis["source_analysis"] = source_analysis
+            detailed_analysis["sentiment_analysis"] = sentiment_analysis
+            return detailed_analysis
         
         return {
-            "status": "ANALYSIS_PROVIDED",
-            "confidence": 0.7,
-            "explanation": "Complex news narrative requiring component analysis",
+            "status": status,
+            "confidence": round(final_confidence, 2),
+            "explanation": f"News analysis: {source_analysis['reason']}. {sentiment_analysis['reason']}",
             "category": "news",
             "components": components,
+            "source_analysis": source_analysis,
+            "sentiment_analysis": sentiment_analysis,
             "recommended_actions": [
                 "Verify each component separately",
                 "Check multiple news sources",
@@ -197,7 +309,7 @@ class FactChecker:
     
     def _analyze_brendan_carr_claim(self, claim: str, components: List[str]) -> Dict:
         """Specific analysis for Brendan Carr/ABC/Kimmel type claims"""
-        analysis = {
+        return {
             "status": "COMPONENT_ANALYSIS",
             "confidence": 0.8,
             "explanation": "News claim broken down into verifiable components",
@@ -221,8 +333,6 @@ class FactChecker:
                 "Look for corroborating reports from multiple outlets"
             ]
         }
-        
-        return analysis
     
     def _break_down_news_claim(self, claim: str) -> List[str]:
         """Break down complex news claims into verifiable components"""
@@ -295,7 +405,7 @@ class FactChecker:
         return assertions[:3]  # Return top 3 assertions
     
     def verify_claim(self, claim: str) -> Dict:
-        """Main verification function with corrected logic"""
+        """Main verification function with enhanced analysis"""
         if not claim or len(claim.strip()) == 0:
             return {
                 "status": "ERROR",
@@ -312,11 +422,34 @@ class FactChecker:
         
         # Apply appropriate verification strategy
         if claim_type == "basic_fact":
-            return self._verify_basic_fact(clean_claim)
+            result = self._verify_basic_fact(clean_claim)
+        elif claim_type == "scientific_misinformation":
+            result = self._verify_scientific_misinformation(clean_claim)
         elif claim_type == "news_claim":
-            return self._verify_news_claim(clean_claim)
+            result = self._verify_news_claim(clean_claim)
         else:
-            return self._verify_general_claim(clean_claim)
+            result = self._verify_general_claim(clean_claim)
+        
+        # Add enhanced analysis for non-basic facts
+        if claim_type != "basic_fact":
+            source_analysis = self._check_news_source_credibility(clean_claim)
+            sentiment_analysis = self._analyze_claim_sentiment(clean_claim)
+            science_analysis = self._validate_scientific_claims(clean_claim)
+            
+            # Update confidence based on analyses
+            if result.get('confidence', 0.5) < 0.9:  # Don't override high confidence basic facts
+                analyses = [source_analysis, sentiment_analysis, science_analysis]
+                analysis_confidence = sum(analysis['confidence'] for analysis in analyses) / len(analyses)
+                result['confidence'] = round((result.get('confidence', 0.5) + analysis_confidence) / 2, 2)
+            
+            # Add analysis details
+            result['enhanced_analysis'] = {
+                'source_credibility': source_analysis,
+                'language_sentiment': sentiment_analysis,
+                'scientific_accuracy': science_analysis
+            }
+        
+        return result
     
     def _verify_general_claim(self, claim: str) -> Dict:
         """Verify general claims that don't fit other categories"""
