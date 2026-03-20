@@ -4,6 +4,9 @@ import os
 from datetime import datetime
 from utils.advanced_fact_checker import advanced_fact_checker
 
+# 🔥 NEW: Multi-Language Support Import
+from utils.language_utils.translator import translate_to_english
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -45,14 +48,31 @@ def verify_claim():
                 'timestamp': datetime.now().isoformat()
             })
         
+        # 🔥 NEW: Multi-Language Support - Translate if needed
+        processed_claim, detected_lang = translate_to_english(claim)
+        
+        # Log language detection
+        if detected_lang != 'en':
+            logger.info(f"🌐 Language detected: {detected_lang}. Translated to English for analysis.")
+            language_info = f"(Translated from {detected_lang})"
+        else:
+            language_info = ""
+            detected_lang = 'en'
+        
         # Update session counter
         session['detection_count'] = session.get('detection_count', 0) + 1
         session['last_claim'] = claim
         
-        logger.info(f"Analyzing claim for fake news: '{claim}'")
+        logger.info(f"Analyzing claim for fake news: '{claim}' {language_info}")
         
-        # Use the corrected fact checker
-        result = advanced_fact_checker.comprehensive_verify(claim)
+        # Use the corrected fact checker with translated text
+        result = advanced_fact_checker.comprehensive_verify(processed_claim)
+        
+        # 🔥 NEW: Add language information to result
+        result['original_language'] = detected_lang
+        result['translated'] = (detected_lang != 'en')
+        if detected_lang != 'en':
+            result['original_text'] = claim
         
         # Add session info to result
         result['session'] = {
@@ -73,6 +93,7 @@ def verify_claim():
             return render_template('result.html', 
                                  claim=claim,
                                  result=result,
+                                 language_info=language_info,
                                  timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
         
     except Exception as e:
@@ -141,17 +162,27 @@ def api_verify():
                 'system': 'Fake News Detection AI'
             }), 400
         
-        logger.info(f"API fake news detection request for: '{claim}'")
+        # 🔥 NEW: Multi-Language Support for API
+        processed_claim, detected_lang = translate_to_english(claim)
         
-        result = advanced_fact_checker.comprehensive_verify(claim)
+        logger.info(f"API fake news detection request for: '{claim}' (lang: {detected_lang})")
+        
+        result = advanced_fact_checker.comprehensive_verify(processed_claim)
         result = enhance_with_fake_news_terminology(result)
+        
+        # 🔥 NEW: Add language info to API response
+        result['original_language'] = detected_lang
+        result['translated'] = (detected_lang != 'en')
+        if detected_lang != 'en':
+            result['original_text'] = claim
         
         # Add API-specific metadata
         result['api'] = {
-            'version': '2.0',
+            'version': '2.1',  # 🔥 Updated version
             'endpoint': '/api/verify',
             'response_format': 'json',
-            'system': 'Fake News Detection AI'
+            'system': 'Fake News Detection AI',
+            'features': ['Multi-Language Support']  # 🔥 New feature
         }
         
         return jsonify(result)
@@ -182,17 +213,32 @@ def api_batch_verify():
                 'system': 'Fake News Detection AI'
             }), 400
         
-        if len(claims) > 50:  # Limit batch size
+        if len(claims) > 50:
             return jsonify({'error': 'Batch size limited to 50 claims maximum'}), 400
         
         logger.info(f"Batch fake news detection request for {len(claims)} claims")
         
-        result = advanced_fact_checker.batch_verify(claims)
+        # 🔥 NEW: Process each claim with translation
+        processed_claims = []
+        language_stats = {}
         
-        # Enhance each result with fake news terminology
-        for key, res in result.items():
+        for claim in claims:
+            processed, lang = translate_to_english(claim)
+            processed_claims.append(processed)
+            language_stats[lang] = language_stats.get(lang, 0) + 1
+        
+        result = advanced_fact_checker.batch_verify(processed_claims)
+        
+        # Enhance each result with fake news terminology and language info
+        for i, (key, res) in enumerate(result.items()):
             if key != 'batch_summary':
                 result[key] = enhance_with_fake_news_terminology(res)
+                # Add original claim if translated
+                if i < len(claims) and claims[i] != processed_claims[i]:
+                    result[key]['original_text'] = claims[i]
+        
+        # 🔥 NEW: Add language statistics
+        result['language_statistics'] = language_stats
         
         return jsonify(result)
         
@@ -210,10 +256,10 @@ def health_check():
     return jsonify({
         'status': 'healthy',
         'timestamp': datetime.now().isoformat(),
-        'version': '2.0_corrected',
+        'version': '2.1_multilingual',  # 🔥 Updated version
         'system': 'Fake News Detection AI',
         'issue_fixed': '50_percent_confidence_bug',
-        'features': ['AI-Powered Detection', 'Confidence Scoring', 'Real-time Analysis']
+        'features': ['AI-Powered Detection', 'Confidence Scoring', 'Real-time Analysis', 'Multi-Language Support']  # 🔥 New
     })
 
 @app.route('/stats')
@@ -222,20 +268,23 @@ def stats():
     stats_data = {
         'detection_count': session.get('detection_count', 0),
         'last_claim_analyzed': session.get('last_claim', 'None'),
-        'system_version': '2.0_corrected',
+        'system_version': '2.1_multilingual',  # 🔥 Updated
         'system_name': 'Fake News Detection AI',
         'fixes_applied': [
             'Basic facts now return 100% confidence',
             'Added proper claim classification',
             'Improved fake news detection algorithms',
-            'Fixed confidence calculation bugs'
+            'Fixed confidence calculation bugs',
+            'Added Multi-Language Support'  # 🔥 New
         ],
         'ai_capabilities': [
             'Pattern recognition',
             'Credibility assessment',
             'Risk evaluation',
-            'Source verification'
+            'Source verification',
+            'Multi-language translation'  # 🔥 New
         ],
+        'supported_languages': ['Hindi', 'Spanish', 'French', 'German', 'and 100+ more'],  # 🔥 New
         'timestamp': datetime.now().isoformat()
     }
     
@@ -262,7 +311,13 @@ if __name__ == '__main__':
     debug_mode = os.environ.get('FLASK_DEBUG', 'True').lower() == 'true'
     
     print("=" * 60)
-    print("FAKE NEWS DETECTION AI - CORRECTED VERSION 2.0")
+    print("FAKE NEWS DETECTION AI - MULTILINGUAL VERSION 2.1")
+    print("=" * 60)
+    print("✨ NEW FEATURES ADDED:")
+    print("✓ Multi-Language Support (Hindi, Spanish, 100+ languages)")
+    print("✓ Automatic language detection")
+    print("✓ Real-time translation")
+    print("✓ Language info in results")
     print("=" * 60)
     print("ISSUES FIXED:")
     print("✓ Basic facts now return 100% confidence (not 50%)")
@@ -273,9 +328,9 @@ if __name__ == '__main__':
     print("Starting Fake News Detection AI on http://localhost:5000")
     print("Available endpoints:")
     print("  GET  /                    - Web interface")
-    print("  POST /verify              - Detect fake news")
-    print("  GET  /api/verify?claim=X  - API detection")
-    print("  POST /api/batch-verify    - Batch detection")
+    print("  POST /verify              - Detect fake news (Multi-Language)")
+    print("  GET  /api/verify?claim=X  - API detection (Multi-Language)")
+    print("  POST /api/batch-verify    - Batch detection (Multi-Language)")
     print("  GET  /health              - Health check")
     print("  GET  /stats               - Statistics")
     print("=" * 60)

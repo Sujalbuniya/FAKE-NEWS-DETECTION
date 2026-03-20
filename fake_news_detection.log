@@ -159,3 +159,129 @@
 2025-09-30 12:53:08,407 - werkzeug - INFO -  * Restarting with stat
 2025-09-30 12:53:08,797 - werkzeug - WARNING -  * Debugger is active!
 2025-09-30 12:53:08,799 - werkzeug - INFO -  * Debugger PIN: 833-334-434
+2026-02-28 08:04:58,097 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.29.56:5000
+2026-02-28 08:04:58,097 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-02-28 08:04:58,100 - werkzeug - INFO -  * Restarting with stat
+2026-02-28 08:04:58,576 - werkzeug - WARNING -  * Debugger is active!
+2026-02-28 08:04:58,586 - werkzeug - INFO -  * Debugger PIN: 833-334-434
+2026-02-28 08:05:44,523 - werkzeug - INFO - 127.0.0.1 - - [28/Feb/2026 08:05:44] "GET / HTTP/1.1" 200 -
+2026-02-28 08:05:44,747 - werkzeug - INFO - 127.0.0.1 - - [28/Feb/2026 08:05:44] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-02-28 08:06:00,217 - __main__ - INFO - Analyzing claim for fake news: 'Delhi is in India'
+2026-02-28 08:06:00,217 - utils.advanced_fact_checker - INFO - Verified claim: 'Delhi is in India' -> Status: VERIFIED
+2026-02-28 08:06:00,218 - __main__ - INFO - Fake news detection result: VERIFIED with confidence 1.0
+2026-02-28 08:06:00,264 - werkzeug - INFO - 127.0.0.1 - - [28/Feb/2026 08:06:00] "POST /verify HTTP/1.1" 200 -
+2026-02-28 08:06:05,788 - werkzeug - INFO - 127.0.0.1 - - [28/Feb/2026 08:06:05] "GET / HTTP/1.1" 200 -
+2026-02-28 08:06:08,662 - __main__ - INFO - Analyzing claim for fake news: 'Breaking: Scientists discover aliens on Mars'
+2026-02-28 08:06:08,663 - utils.advanced_fact_checker - INFO - Verified claim: 'Breaking: Scientists discover aliens on Mars' -> Status: REQUIRES_RESEARCH
+2026-02-28 08:06:08,663 - __main__ - INFO - Fake news detection result: REQUIRES_RESEARCH with confidence 0.5
+2026-02-28 08:06:08,664 - werkzeug - INFO - 127.0.0.1 - - [28/Feb/2026 08:06:08] "POST /verify HTTP/1.1" 200 -
+2026-02-28 08:06:12,905 - werkzeug - INFO - 127.0.0.1 - - [28/Feb/2026 08:06:12] "GET / HTTP/1.1" 200 -
+2026-02-28 08:07:45,905 - __main__ - INFO - Analyzing claim for fake news: 'India won cricket world cup 2025'
+2026-02-28 08:07:45,906 - utils.advanced_fact_checker - INFO - Verified claim: 'India won cricket world cup 2025' -> Status: REQUIRES_RESEARCH
+2026-02-28 08:07:45,906 - __main__ - INFO - Fake news detection result: REQUIRES_RESEARCH with confidence 0.52
+2026-02-28 08:07:45,908 - werkzeug - INFO - 127.0.0.1 - - [28/Feb/2026 08:07:45] "POST /verify HTTP/1.1" 200 -
+2026-02-28 08:08:06,803 - werkzeug - INFO - 127.0.0.1 - - [28/Feb/2026 08:08:06] "GET / HTTP/1.1" 200 -
+2026-02-28 08:08:09,395 - __main__ - INFO - Analyzing claim for fake news: 'Government announces new tax policy'
+2026-02-28 08:08:09,396 - utils.advanced_fact_checker - INFO - Verified claim: 'Government announces new tax policy' -> Status: UNCERTAIN
+2026-02-28 08:08:09,398 - __main__ - INFO - Fake news detection result: UNCERTAIN with confidence 0.57
+2026-02-28 08:08:09,399 - werkzeug - INFO - 127.0.0.1 - - [28/Feb/2026 08:08:09] "POST /verify HTTP/1.1" 200 -
+2026-02-28 08:25:34,194 - werkzeug - INFO -  * Detected change in 'C:\\Users\\sujal\\OneDrive\\Desktop\\project 2.0\\FAKE-NEWS-DETECTION\\utils\\language_utils\\translator.py', reloading
+2026-02-28 08:25:34,235 - werkzeug - INFO -  * Restarting with stat
+2026-02-28 08:25:34,519 - werkzeug - WARNING -  * Debugger is active!
+2026-02-28 08:25:34,522 - werkzeug - INFO -  * Debugger PIN: 833-334-434
+2026-02-28 08:25:35,541 - werkzeug - INFO -  * Detected change in 'C:\\Users\\sujal\\OneDrive\\Desktop\\project 2.0\\FAKE-NEWS-DETECTION\\utils\\language_utils\\translator.py', reloading
+2026-02-28 08:25:35,588 - werkzeug - INFO -  * Restarting with stat
+2026-02-28 08:25:35,951 - werkzeug - WARNING -  * Debugger is active!
+2026-02-28 08:25:35,957 - werkzeug - INFO -  * Debugger PIN: 833-334-434
+2026-02-28 08:28:55,991 - werkzeug - INFO -  * Detected change in 'C:\\Users\\sujal\\OneDrive\\Desktop\\project 2.0\\FAKE-NEWS-DETECTION\\app.py', reloading
+2026-02-28 08:28:56,039 - werkzeug - INFO -  * Restarting with stat
+2026-02-28 09:19:05,916 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.29.56:5000
+2026-02-28 09:19:05,916 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-02-28 09:19:05,918 - werkzeug - INFO -  * Restarting with stat
+2026-02-28 09:19:06,672 - werkzeug - WARNING -  * Debugger is active!
+2026-02-28 09:19:06,674 - werkzeug - INFO -  * Debugger PIN: 648-894-131
+2026-02-28 09:19:29,319 - werkzeug - INFO - 127.0.0.1 - - [28/Feb/2026 09:19:29] "GET / HTTP/1.1" 200 -
+2026-02-28 21:16:25,198 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.29.56:5000
+2026-02-28 21:16:25,198 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-02-28 21:16:25,211 - werkzeug - INFO -  * Restarting with stat
+2026-02-28 21:16:27,042 - werkzeug - WARNING -  * Debugger is active!
+2026-02-28 21:16:27,042 - werkzeug - INFO -  * Debugger PIN: 648-894-131
+2026-02-28 21:16:35,790 - werkzeug - INFO - 127.0.0.1 - - [28/Feb/2026 21:16:35] "GET / HTTP/1.1" 200 -
+2026-02-28 21:16:36,039 - werkzeug - INFO - 127.0.0.1 - - [28/Feb/2026 21:16:36] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-02-28 21:17:04,951 - __main__ - INFO - Analyzing claim for fake news: 'pakistan win last match' (Translated from tl)
+2026-02-28 21:17:04,960 - utils.advanced_fact_checker - INFO - Verified claim: 'pakistan win last match' -> Status: REQUIRES_RESEARCH
+2026-02-28 21:17:04,961 - __main__ - INFO - Fake news detection result: REQUIRES_RESEARCH with confidence 0.52
+2026-02-28 21:17:05,052 - werkzeug - INFO - 127.0.0.1 - - [28/Feb/2026 21:17:05] "POST /verify HTTP/1.1" 200 -
+2026-03-01 08:41:04,560 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.29.56:5000
+2026-03-01 08:41:04,560 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-01 08:41:04,576 - werkzeug - INFO -  * Restarting with stat
+2026-03-01 08:41:06,314 - werkzeug - WARNING -  * Debugger is active!
+2026-03-01 08:41:06,326 - werkzeug - INFO -  * Debugger PIN: 648-894-131
+2026-03-01 08:41:29,802 - werkzeug - INFO - 127.0.0.1 - - [01/Mar/2026 08:41:29] "GET / HTTP/1.1" 200 -
+2026-03-01 08:41:30,047 - werkzeug - INFO - 127.0.0.1 - - [01/Mar/2026 08:41:30] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-01 08:41:59,569 - __main__ - INFO - Analyzing claim for fake news: 'Delhi is in India' (Translated from nl)
+2026-03-01 08:41:59,569 - utils.advanced_fact_checker - INFO - Verified claim: 'Delhi is in India' -> Status: VERIFIED
+2026-03-01 08:41:59,576 - __main__ - INFO - Fake news detection result: VERIFIED with confidence 1.0
+2026-03-01 08:41:59,667 - werkzeug - INFO - 127.0.0.1 - - [01/Mar/2026 08:41:59] "POST /verify HTTP/1.1" 200 -
+2026-03-01 08:43:35,413 - werkzeug - INFO - 127.0.0.1 - - [01/Mar/2026 08:43:35] "GET /stats HTTP/1.1" 200 -
+2026-03-01 08:43:51,851 - __main__ - INFO - Analyzing claim for fake news: 'Delhi is in India' (Translated from nl)
+2026-03-01 08:43:51,858 - utils.advanced_fact_checker - INFO - Verified claim: 'Delhi is in India' -> Status: VERIFIED
+2026-03-01 08:43:51,858 - __main__ - INFO - Fake news detection result: VERIFIED with confidence 1.0
+2026-03-01 08:43:51,863 - werkzeug - INFO - 127.0.0.1 - - [01/Mar/2026 08:43:51] "POST /verify HTTP/1.1" 200 -
+2026-03-04 10:56:06,210 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.29.56:5000
+2026-03-04 10:56:06,212 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-04 10:56:06,218 - werkzeug - INFO -  * Restarting with stat
+2026-03-04 10:56:07,672 - werkzeug - WARNING -  * Debugger is active!
+2026-03-04 10:56:07,679 - werkzeug - INFO -  * Debugger PIN: 648-894-131
+2026-03-13 12:18:08,021 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.7:5000
+2026-03-13 12:18:08,028 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-13 12:18:08,028 - werkzeug - INFO -  * Restarting with stat
+2026-03-13 12:18:08,800 - werkzeug - WARNING -  * Debugger is active!
+2026-03-13 12:18:08,803 - werkzeug - INFO -  * Debugger PIN: 648-894-131
+2026-03-13 12:20:50,644 - werkzeug - INFO - 127.0.0.1 - - [13/Mar/2026 12:20:50] "GET / HTTP/1.1" 200 -
+2026-03-13 12:20:50,896 - werkzeug - INFO - 127.0.0.1 - - [13/Mar/2026 12:20:50] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-13 12:21:00,913 - __main__ - INFO - Analyzing claim for fake news: 'Delhi is in India' (Translated from nl)
+2026-03-13 12:21:00,913 - utils.advanced_fact_checker - INFO - Verified claim: 'Delhi is in India' -> Status: VERIFIED
+2026-03-13 12:21:00,913 - __main__ - INFO - Fake news detection result: VERIFIED with confidence 1.0
+2026-03-13 12:21:00,998 - werkzeug - INFO - 127.0.0.1 - - [13/Mar/2026 12:21:00] "POST /verify HTTP/1.1" 200 -
+2026-03-15 10:41:21,263 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.7:5000
+2026-03-15 10:41:21,263 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-15 10:41:21,268 - werkzeug - INFO -  * Restarting with stat
+2026-03-15 10:41:22,266 - werkzeug - WARNING -  * Debugger is active!
+2026-03-15 10:41:22,270 - werkzeug - INFO -  * Debugger PIN: 648-894-131
+2026-03-15 10:41:28,004 - werkzeug - INFO - 127.0.0.1 - - [15/Mar/2026 10:41:28] "GET / HTTP/1.1" 200 -
+2026-03-15 10:41:28,552 - werkzeug - INFO - 127.0.0.1 - - [15/Mar/2026 10:41:28] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-03-15 10:47:19,970 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.7:5000
+2026-03-15 10:47:19,970 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-03-15 10:47:19,974 - werkzeug - INFO -  * Restarting with stat
+2026-03-15 10:47:21,824 - werkzeug - WARNING -  * Debugger is active!
+2026-03-15 10:47:21,824 - werkzeug - INFO -  * Debugger PIN: 648-894-131
+2026-03-15 10:47:27,671 - werkzeug - INFO - 127.0.0.1 - - [15/Mar/2026 10:47:27] "GET / HTTP/1.1" 200 -
+2026-03-15 10:47:55,287 - __main__ - INFO - Analyzing claim for fake news: 'Breaking: Scientists discover aliens on Mars' 
+2026-03-15 10:47:55,287 - utils.advanced_fact_checker - INFO - Verified claim: 'Breaking: Scientists discover aliens on Mars' -> Status: REQUIRES_RESEARCH
+2026-03-15 10:47:55,294 - __main__ - INFO - Fake news detection result: REQUIRES_RESEARCH with confidence 0.5
+2026-03-15 10:47:55,363 - werkzeug - INFO - 127.0.0.1 - - [15/Mar/2026 10:47:55] "POST /verify HTTP/1.1" 200 -
